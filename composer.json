@@ -1,0 +1,20 @@
+{
+    "name": "taylornetwork/toastr",
+    "description": "A laravel class that will generate Toastr messages using toastr.js",
+    "authors": [
+        {
+            "name": "Sam Taylor",
+            "email": "sam@taylornetwork.ca"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/",
+            "TaylorNetwork\\Toastr\\": "packages/TaylorNetwork/Toastr/src"
+        }
+    }
+}
