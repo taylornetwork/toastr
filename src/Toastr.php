@@ -1,6 +1,6 @@
 <?php
 
-namespace TaylorNetwork\Toastr
+namespace TaylorNetwork\Toastr;
 
 use Session;
 use Setting;
