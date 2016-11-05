@@ -3,8 +3,6 @@
 namespace TaylorNetwork\Toastr;
 
 use Illuminate\Support\ServiceProvider;
-use TaylorNetwork\Toastr\Toastr;
-use App;
 
 class ToastrServiceProvider extends ServiceProvider
 {
@@ -15,7 +13,9 @@ class ToastrServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__.'/config/toastr.php' => config_path('toastr.php'),
+        ]);
     }
 
     /**
@@ -25,8 +25,12 @@ class ToastrServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        App::bind('Toastr', function(){
+        $this->app->bind('Toastr', function(){
             return new Toastr;
         });
+
+        $this->mergeConfigFrom(
+            __DIR__.'/config/toastr.php', 'toastr'
+        );
     }
 }

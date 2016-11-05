@@ -2,17 +2,20 @@
 
 namespace TaylorNetwork\Toastr;
 
-use Session;
-use Setting;
+use Illuminate\Session\SessionManager;
 
+/**
+ * Laravel Toastr Integration
+ *
+ * @url http://codeseven.github.io/toastr
+ * @package TaylorNetwork\Toastr
+ */
 class Toastr
 {
     /**
-     * The notifications to fire.
-     *
-     * @var array
+     * @var SessionManager
      */
-    protected $notifications = [];
+    protected $sessionManager;
     
     /**
      * The options for Toastr.js
@@ -27,16 +30,26 @@ class Toastr
      * 
      * @var array
      */
-    private $styles = [];
+    protected $styles = [];
 
     /**
-     * Load config file...
+     * The notifications to fire.
+     *
+     * @var array
      */
-    public function __construct()
+    protected $notifications = [];
+
+    /**
+     * Toastr Constructor
+     *
+     * @param SessionManager $sessionManager
+     */
+    public function __construct(SessionManager $sessionManager)
     {
-        $this->notifications += config('toastr.notifications');
+        $this->sessionManager = $sessionManager;
         $this->options += config('toastr.options');
         $this->styles += config('toastr.styles');
+        $this->notifications += config('toastr.notifications');
     }
 
     /**
@@ -74,7 +87,7 @@ class Toastr
     {
         if(in_array($style, $this->styles))
         {
-            Session::push('toastr', [ 'style' => $style, 'message' => $message, 'title' => $title ]);
+            $this->sessionManager->push('toastr', [ 'style' => $style, 'message' => $message, 'title' => $title ]);
         }
     }
     
@@ -85,14 +98,14 @@ class Toastr
      */
     public function getFromSession()
     {
-        if(Session::has('toastr'))
+        if($this->sessionManager->has('toastr'))
         {
-            $toastrMessages = Session::get('toastr');
+            $toastrMessages = $this->sessionManager->get('toastr');
             foreach($toastrMessages as $toastrMessage)
             {
                 $this->add($toastrMessage['style'], $toastrMessage['message'], $toastrMessage['title']);
             }
-            Session::forget('toastr');
+            $this->sessionManager->forget('toastr');
         }
     }
     
@@ -106,10 +119,7 @@ class Toastr
      */
     public function add($style, $message, $title = null)
     {
-        if(Setting::get('toastr.' . $style . '.show', true))
-        {
-            $this->notifications[] = 'toastr.' . $style . '("' . $message . '","' . $title . '");';
-        }
+        $this->notifications[] = 'toastr.' . $style . '("' . $message . '","' . $title . '");';
     }
     
     /**
