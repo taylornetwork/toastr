@@ -2,8 +2,6 @@
 
 namespace TaylorNetwork\Toastr;
 
-use Illuminate\Session\SessionManager;
-
 /**
  * Laravel Toastr Integration
  *
@@ -13,10 +11,19 @@ use Illuminate\Session\SessionManager;
 class Toastr
 {
     /**
-     * @var SessionManager
+     * Session
+     *
+     * @var \Illuminate\Foundation\Application|mixed
      */
-    protected $sessionManager;
-    
+    protected $session;
+
+    /**
+     * The notifications to fire.
+     *
+     * @var array
+     */
+    protected $notifications = [];
+
     /**
      * The options for Toastr.js
      * These will override any values loaded by config/toastr
@@ -33,20 +40,11 @@ class Toastr
     protected $styles = [];
 
     /**
-     * The notifications to fire.
-     *
-     * @var array
+     * Load config file...
      */
-    protected $notifications = [];
-
-    /**
-     * Toastr Constructor
-     *
-     * @param SessionManager $sessionManager
-     */
-    public function __construct(SessionManager $sessionManager)
+    public function __construct()
     {
-        $this->sessionManager = $sessionManager;
+        $this->session = app('session');
         $this->options += config('toastr.options');
         $this->styles += config('toastr.styles');
         $this->notifications += config('toastr.notifications');
@@ -87,7 +85,7 @@ class Toastr
     {
         if(in_array($style, $this->styles))
         {
-            $this->sessionManager->push('toastr', [ 'style' => $style, 'message' => $message, 'title' => $title ]);
+            $this->session->push('toastr', [ 'style' => $style, 'message' => $message, 'title' => $title ]);
         }
     }
     
@@ -98,14 +96,14 @@ class Toastr
      */
     public function getFromSession()
     {
-        if($this->sessionManager->has('toastr'))
+        if($this->session->has('toastr'))
         {
-            $toastrMessages = $this->sessionManager->get('toastr');
+            $toastrMessages = $this->session->get('toastr');
             foreach($toastrMessages as $toastrMessage)
             {
                 $this->add($toastrMessage['style'], $toastrMessage['message'], $toastrMessage['title']);
             }
-            $this->sessionManager->forget('toastr');
+            $this->session->forget('toastr');
         }
     }
     
