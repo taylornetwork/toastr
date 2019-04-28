@@ -6,13 +6,13 @@ return [
      |--------------------------------------------------------------------------
      | Toastr Options
      |--------------------------------------------------------------------------
-     | 
-     | Default options to pass to Toastr. All options will be added to the 
-     | $options property in the Toastr class. If the same option is set with 
+     |
+     | Default options to pass to Toastr. All options will be added to the
+     | $options property in the Toastr class. If the same option is set with
      | different values, the Toastr class property will override this one.
-     | For more info on the options that can be used see: 
+     | For more info on the options that can be used see:
      | http://codeseven.github.io/toastr
-     | 
+     |
      */
     'options' => [
         'progressBar' => true,
@@ -23,19 +23,19 @@ return [
      |--------------------------------------------------------------------------
      | Allowed Toastr Styles
      |--------------------------------------------------------------------------
-     | 
+     |
      | Place the styles that you want toastr.js to generate. If they aren't
      | in this array or in the $styles property in the Toastr class, they will
-     | not be generated. 
-     | 
+     | not be generated.
+     |
      | Options are: success, warning, info, error
      |
      */
-    'styles' => [ 
-        'success', 
-        'warning', 
-        'info', 
-        'error' 
+    'styles' => [
+        'success',
+        'warning',
+        'info',
+        'error',
     ],
 
     /*

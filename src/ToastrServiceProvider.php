@@ -25,8 +25,8 @@ class ToastrServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Toastr', function(){
-            return new Toastr;
+        $this->app->bind('Toastr', function () {
+            return new Toastr();
         });
 
         $this->mergeConfigFrom(

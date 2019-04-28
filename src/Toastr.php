@@ -3,15 +3,14 @@
 namespace TaylorNetwork\Toastr;
 
 /**
- * Laravel Toastr Integration
+ * Laravel Toastr Integration.
  *
  * @url http://codeseven.github.io/toastr
- * @package TaylorNetwork\Toastr
  */
 class Toastr
 {
     /**
-     * Session
+     * Session.
      *
      * @var \Illuminate\Foundation\Application|mixed
      */
@@ -26,15 +25,15 @@ class Toastr
 
     /**
      * The options for Toastr.js
-     * These will override any values loaded by config/toastr
+     * These will override any values loaded by config/toastr.
      *
      * @var array
      */
     protected $options = [];
-    
+
     /**
-     * The styles of notifications
-     * 
+     * The styles of notifications.
+     *
      * @var array
      */
     protected $styles = [];
@@ -51,18 +50,18 @@ class Toastr
     }
 
     /**
-     * Generate a notification style by calling Toastr::style
+     * Generate a notification style by calling Toastr::style.
      *
      * @param string $method
-     * @param array $args
+     * @param array  $args
+     *
      * @return void
      */
     public function __call($method, $args)
     {
-        switch(count($args))
-        {
+        switch (count($args)) {
             case 1:
-                $this->toSession($method, $args[0], ucfirst($method) . '!');
+                $this->toSession($method, $args[0], ucfirst($method).'!');
                 break;
             case 2:
                 $this->toSession($method, $args[0], $args[1]);
@@ -71,24 +70,24 @@ class Toastr
                 break;
         }
     }
-    
+
     /**
-     * Push the generated notification to the session so that it will 
+     * Push the generated notification to the session so that it will
      *  persist to the desired page.
      *
      * @param string $style
      * @param string $message
      * @param string $title
+     *
      * @return void
      */
     public function toSession($style, $message, $title = null)
     {
-        if(in_array($style, $this->styles))
-        {
-            $this->session->push('toastr', [ 'style' => $style, 'message' => $message, 'title' => $title ]);
+        if (in_array($style, $this->styles)) {
+            $this->session->push('toastr', ['style' => $style, 'message' => $message, 'title' => $title]);
         }
     }
-    
+
     /**
      * Get the notifications to fire from the session.
      *
@@ -96,30 +95,29 @@ class Toastr
      */
     public function getFromSession()
     {
-        if($this->session->has('toastr'))
-        {
+        if ($this->session->has('toastr')) {
             $toastrMessages = $this->session->get('toastr');
-            foreach($toastrMessages as $toastrMessage)
-            {
+            foreach ($toastrMessages as $toastrMessage) {
                 $this->add($toastrMessage['style'], $toastrMessage['message'], $toastrMessage['title']);
             }
             $this->session->forget('toastr');
         }
     }
-    
+
     /**
      * Push a notification onto the stack.
      *
      * @param string $style
      * @param string $message
      * @param string $title
+     *
      * @return void
      */
     public function add($style, $message, $title = null)
     {
-        $this->notifications[] = 'toastr.' . $style . '("' . $message . '","' . $title . '");';
+        $this->notifications[] = 'toastr.'.$style.'("'.$message.'","'.$title.'");';
     }
-    
+
     /**
      * Fire the notifications!
      *
@@ -129,21 +127,19 @@ class Toastr
     {
         $this->getFromSession();
         $html = '<script>';
-        if(!empty($this->options))
-        {
-            foreach($this->options as $option => $value)
-            {
-                $html .= 'toastr.options.' . $option . '=' . $value . ';';
+        if (!empty($this->options)) {
+            foreach ($this->options as $option => $value) {
+                $html .= 'toastr.options.'.$option.'='.$value.';';
             }
         }
-        foreach($this->notifications as $notification)
-        {
+        foreach ($this->notifications as $notification) {
             $html .= $notification;
         }
         $html .= '</script>';
+
         return $html;
     }
-    
+
     /**
      * Empty the notification stack.
      *
@@ -152,6 +148,7 @@ class Toastr
     public function clear()
     {
         $this->notifications = [];
+
         return true;
     }
 }
